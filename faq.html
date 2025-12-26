@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | The Study Lens</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="faq.css">
+</head>
+<body>
+    <!-- Top hero with image -->
+    <header class="faq-hero">
+        <!-- change src to your FAQ top image -->
+        <img src="hometop.jpg" alt="FAQ Banner" class="faq-hero-img">
+        <div class="faq-hero-overlay">
+            <h1>Frequently Asked Questions</h1>
+            <p>About The Study Lens – Student Performance Analytics System</p>
+        </div>
+    </header>
+
+    <!-- FAQ content -->
+    <main class="faq-container">
+        <section class="faq">
+            <!-- Item 1 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    What is The Study Lens?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        The Study Lens is a student performance analytics and reporting system that collects test scores,
+                        attendance, and behavior data to give teachers, students, and parents a clear picture of academic progress.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    How does the system calculate performance?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        The system aggregates marks from multiple assessments, converts them into percentages, and generates
+                        subject-wise and overall performance reports, including alerts for students below key thresholds like 50%, 75%, and 90%.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Who can access the analytics?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        Teachers can view detailed analytics for all students in their classes, while students can only see
+                        their own marks, percentages, and reports through their login.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can the system track individual subject strengths and weaknesses?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        Yes. The system stores subject-wise marks (for example JAVA, FWD, DTI, LSE, DM) and highlights areas
+                        where the student consistently scores low or high, helping teachers plan targeted interventions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    Does the system support historical comparison of performance?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        The Study Lens can compare current marks with previous tests to show improvement trends and identify
+                        sudden drops in performance that may need attention.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="faq-item">
+                <button class="faq-question">
+                    How secure is the student data?
+                    <span class="icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        Access is restricted by login roles (teacher or student), and only authorized users can view or modify
+                        records related to their account or class.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Simple accordion toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const items = document.querySelectorAll('.faq-question');
+
+            items.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const item = this.parentElement;
+                    const open = item.classList.contains('active');
+
+                    // close all
+                    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+                    if (!open) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

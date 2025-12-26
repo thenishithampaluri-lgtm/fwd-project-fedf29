@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Home</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="studenthome.css">
+</head>
+<body>
+    <header class="top-hero">
+        <img src="hometop.jpg" alt="Banner" class="hero-img">
+        <div class="hero-overlay">
+            <h1>Student Home</h1>
+        </div>
+    </header>
+
+    <div class="welcome-bar">
+        <h2 id="welcomeMessage">Welcome, Student !!</h2>
+    </div>
+
+    <main class="dashboard">
+        <aside class="side-tabs">
+            <button class="tab-btn active" data-tab="marksTab">Marks</button>
+            <button class="tab-btn" data-tab="reportTab">Report</button>
+        </aside>
+
+        <section class="tab-panels">
+            <!-- Marks tab -->
+            <div id="marksTab" class="tab-content active">
+                <h3>Your Marks & Percentage</h3>
+                <table id="studentMarksTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>JAVA</th>
+                            <th>FWD</th>
+                            <th>DTI</th>
+                            <th>LSE</th>
+                            <th>DM</th>
+                            <th>Total ( /500)</th>
+                            <th>Percentage (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- row added by JS -->
+                    </tbody>
+                </table>
+                <p class="info-msg" id="marksMsg"></p>
+            </div>
+
+            <!-- Report tab -->
+            <div id="reportTab" class="tab-content">
+                <h3>Your Report</h3>
+                <table id="studentReportTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Percentage (%)</th>
+                            <th>Category</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- row added by JS -->
+                    </tbody>
+                </table>
+                <p class="info-msg" id="reportMsg"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // WELCOME
+            const userName = localStorage.getItem('loggedInUser');
+            const welcomeEl = document.getElementById('welcomeMessage');
+            welcomeEl.textContent = userName ? `Welcome, ${userName} !!` : 'Welcome !!';
+
+            // TABS
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function showTab(tabId){
+                tabContents.forEach(c => {
+                    c.classList.toggle('active', c.id === tabId);
+                });
+                tabButtons.forEach(b => {
+                    b.classList.toggle('active', b.dataset.tab === tabId);
+                });
+            }
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => showTab(btn.dataset.tab));
+            });
+
+            // DATA HELPERS
+            function getStudents(){
+                const raw = localStorage.getItem('studentsList');
+                return raw ? JSON.parse(raw) : [];
+            }
+
+            function getCategoryAndRemark(percentage){
+                if (percentage < 50){
+                    return { category: 'Below 50%', remark: 'Needs significant improvement.' };
+                } else if (percentage < 75){
+                    return { category: '50% - 75%', remark: 'Average performance.' };
+                } else if (percentage < 90){
+                    return { category: '75% - 90%', remark: 'Good performance.' };
+                } else {
+                    return { category: '90% and above', remark: 'Excellent performance.' };
+                }
+            }
+
+            const marksTbody = document.querySelector('#studentMarksTable tbody');
+            const marksMsg = document.getElementById('marksMsg');
+            const reportTbody = document.querySelector('#studentReportTable tbody');
+            const reportMsg = document.getElementById('reportMsg');
+
+            const students = getStudents();
+
+            // Find the record whose name matches the logged-in user (e.g., "Shiva")
+            const myData = students.find(s => s.name === userName);
+
+            if (!myData){
+                marksMsg.textContent = 'No marks found for your account yet.';
+                reportMsg.textContent = 'No report available yet.';
+                return;
+            }
+
+            // SUBJECT‑WISE MARKS ROW (JAVA, FWD, DTI, LSE, DM)
+            const trMarks = document.createElement('tr');
+            trMarks.innerHTML = `
+                <td>${myData.name}</td>
+                <td>${myData.m1}</td>  <!-- JAVA -->
+                <td>${myData.m2}</td>  <!-- FWD -->
+                <td>${myData.m3}</td>  <!-- DTI -->
+                <td>${myData.m4}</td>  <!-- LSE -->
+                <td>${myData.m5}</td>  <!-- DM -->
+                <td>${myData.total}</td>
+                <td>${myData.percentage.toFixed(2)}</td>
+            `;
+            marksTbody.appendChild(trMarks);
+
+            // REPORT ROW
+            const { category, remark } = getCategoryAndRemark(myData.percentage);
+            const trReport = document.createElement('tr');
+            trReport.innerHTML = `
+                <td>${myData.name}</td>
+                <td>${myData.percentage.toFixed(2)}</td>
+                <td>${category}</td>
+                <td>${remark}</td>
+            `;
+            reportTbody.appendChild(trReport);
+        });
+    </script>
+</body>
+</html>

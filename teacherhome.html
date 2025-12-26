@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Home</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Use same style file as student (or copy it as teacherhome.css) -->
+    <link rel="stylesheet" href="teacherhome.css">
+</head>
+<body>
+    <!-- Top image + title -->
+    <header class="top-hero">
+        <img src="hometop.jpg" alt="Banner" class="hero-img">
+        <div class="hero-overlay">
+            <h1>Teacher Home</h1>
+        </div>
+    </header>
+
+    <!-- Welcome centered below hero -->
+    <div class="welcome-bar">
+        <h2 id="welcomeMessage">Welcome, Teacher !!</h2>
+    </div>
+
+    <!-- Main layout: left tabs, right content -->
+    <main class="dashboard">
+        <aside class="side-tabs">
+            <button class="tab-btn active" data-tab="marksTab">Marks Entry</button>
+            <button class="tab-btn" data-tab="percentTab">Marks Percentage</button>
+            <button class="tab-btn" data-tab="reportTab">Student Reports</button>
+        </aside>
+
+        <section class="tab-panels">
+            <!-- Tab 1: Marks entry -->
+            <div id="marksTab" class="tab-content active">
+                <h3>Enter Marks for 5 Subjects</h3>
+
+                <label>Student Name:</label>
+                <input type="text" id="studentName">
+
+                <label>JAVA:</label>
+                <input type="number" id="m1">
+
+                <label>FWD:</label>
+                <input type="number" id="m2">
+
+                <label>DTI:</label>
+                <input type="number" id="m3">
+
+                <label>LSE:</label>
+                <input type="number" id="m4">
+
+                <label>DM:</label>
+                <input type="number" id="m5">
+
+                <button type="button" id="saveMarksBtn">Save Marks</button>
+
+                <div id="marksSavedMsg" class="info-msg"></div>
+            </div>
+
+            <!-- Tab 2: Percentages table -->
+            <div id="percentTab" class="tab-content">
+                <h3>Marks Percentage (All Students)</h3>
+                <table id="studentsTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>JAVA</th>
+                            <th>FWD</th>
+                            <th>DTI</th>
+                            <th>LSE</th>
+                            <th>DM</th>
+                            <th>Total ( /500)</th>
+                            <th>Percentage (%)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- rows added by JS -->
+                    </tbody>
+                </table>
+                <p class="info-msg" id="noStudentsMsg"></p>
+            </div>
+
+            <!-- Tab 3: Reports table -->
+            <div id="reportTab" class="tab-content">
+                <h3>Student Reports (All Students)</h3>
+                <table id="reportsTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Percentage (%)</th>
+                            <th>Category</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- rows added by JS -->
+                    </tbody>
+                </table>
+                <p class="info-msg" id="noReportsMsg"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ---------- WELCOME ----------
+            const name = localStorage.getItem('loggedInUser'); // 'raju' from login
+            const welcomeEl = document.getElementById('welcomeMessage');
+            if (welcomeEl) {
+                welcomeEl.textContent = name ? `Welcome, ${name} !!` : 'Welcome !!';
+            }
+
+            // ---------- TABS ----------
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function showTab(tabId){
+                tabContents.forEach(c => {
+                    c.classList.toggle('active', c.id === tabId);
+                });
+                tabButtons.forEach(b => {
+                    b.classList.toggle('active', b.dataset.tab === tabId);
+                });
+            }
+            showTab('marksTab');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => showTab(btn.dataset.tab));
+            });
+
+            // ---------- STORAGE HELPERS ----------
+            function getStudents(){
+                const raw = localStorage.getItem('studentsList');
+                return raw ? JSON.parse(raw) : [];
+            }
+            function saveStudents(list){
+                localStorage.setItem('studentsList', JSON.stringify(list));
+            }
+
+            function getCategoryAndRemark(percentage){
+                if (percentage < 50) {
+                    return { category: 'Below 50%', remark: 'Needs significant improvement.' };
+                } else if (percentage < 75) {
+                    return { category: '50% - 75%', remark: 'Average performance.' };
+                } else if (percentage < 90) {
+                    return { category: '75% - 90%', remark: 'Good performance.' };
+                } else {
+                    return { category: '90% and above', remark: 'Excellent performance.' };
+                }
+            }
+
+            // ---------- BUILD TABLES WITH EDIT/DELETE ----------
+            const studentsTableBody = document.querySelector('#studentsTable tbody');
+            const noStudentsMsg = document.getElementById('noStudentsMsg');
+            const reportsTableBody = document.querySelector('#reportsTable tbody');
+            const noReportsMsg = document.getElementById('noReportsMsg');
+
+            function renderTables(){
+                const students = getStudents();
+
+                studentsTableBody.innerHTML = '';
+                reportsTableBody.innerHTML = '';
+
+                if (students.length === 0){
+                    noStudentsMsg.textContent = 'No students saved yet.';
+                    noReportsMsg.textContent = 'No reports available.';
+                    return;
+                }
+                noStudentsMsg.textContent = '';
+                noReportsMsg.textContent = '';
+
+                students.forEach((s, index) => {
+                    // percentage table row with Edit & Delete
+                    const tr1 = document.createElement('tr');
+                    tr1.innerHTML = `
+                        <td>${s.name}</td>
+                        <td>${s.m1}</td>
+                        <td>${s.m2}</td>
+                        <td>${s.m3}</td>
+                        <td>${s.m4}</td>
+                        <td>${s.m5}</td>
+                        <td>${s.total}</td>
+                        <td>${s.percentage.toFixed(2)}</td>
+                        <td>
+                            <button class="edit-btn" data-index="${index}">Edit</button>
+                            <button class="del-btn" data-index="${index}">Delete</button>
+                        </td>
+                    `;
+                    studentsTableBody.appendChild(tr1);
+
+                    // report table row
+                    const { category, remark } = getCategoryAndRemark(s.percentage);
+                    const tr2 = document.createElement('tr');
+                    tr2.innerHTML = `
+                        <td>${s.name}</td>
+                        <td>${s.percentage.toFixed(2)}</td>
+                        <td>${category}</td>
+                        <td>${remark}</td>
+                    `;
+                    reportsTableBody.appendChild(tr2);
+                });
+
+                // attach edit/delete events
+                studentsTableBody.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => startEditStudent(parseInt(btn.dataset.index, 10)));
+                });
+                studentsTableBody.querySelectorAll('.del-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteStudent(parseInt(btn.dataset.index, 10)));
+                });
+            }
+
+            // ---------- MARKS ENTRY / SAVE (ADD OR UPDATE) ----------
+            const saveBtn = document.getElementById('saveMarksBtn');
+            const savedMsg = document.getElementById('marksSavedMsg');
+
+            let editIndex = null; // null = add new, number = update existing
+
+            function clearForm(){
+                document.getElementById('studentName').value = '';
+                document.getElementById('m1').value = '';
+                document.getElementById('m2').value = '';
+                document.getElementById('m3').value = '';
+                document.getElementById('m4').value = '';
+                document.getElementById('m5').value = '';
+                editIndex = null;
+                saveBtn.textContent = 'Save Marks';
+            }
+
+            function startEditStudent(index){
+                const students = getStudents();
+                const s = students[index];
+                if (!s) return;
+
+                document.getElementById('studentName').value = s.name;
+                document.getElementById('m1').value = s.m1;
+                document.getElementById('m2').value = s.m2;
+                document.getElementById('m3').value = s.m3;
+                document.getElementById('m4').value = s.m4;
+                document.getElementById('m5').value = s.m5;
+
+                editIndex = index;
+                saveBtn.textContent = 'Update Marks';
+                showTab('marksTab');
+            }
+
+            function deleteStudent(index){
+                const students = getStudents();
+                const s = students[index];
+                if (!s) return;
+                if (!confirm(`Delete records for ${s.name}?`)) return;
+
+                students.splice(index, 1);
+                saveStudents(students);
+                renderTables();
+            }
+
+            saveBtn.addEventListener('click', function () {
+                const sName = document.getElementById('studentName').value.trim();
+                const m1 = Number(document.getElementById('m1').value);
+                const m2 = Number(document.getElementById('m2').value);
+                const m3 = Number(document.getElementById('m3').value);
+                const m4 = Number(document.getElementById('m4').value);
+                const m5 = Number(document.getElementById('m5').value);
+
+                if (!sName || isNaN(m1) || isNaN(m2) || isNaN(m3) || isNaN(m4) || isNaN(m5)) {
+                    savedMsg.textContent = 'Please enter student name and all 5 subject marks.';
+                    return;
+                }
+
+                const total = m1 + m2 + m3 + m4 + m5;
+                const percentage = (total / 500) * 100;
+
+                const students = getStudents();
+
+                if (editIndex === null){
+                    // ADD
+                    students.push({ name: sName, m1, m2, m3, m4, m5, total, percentage });
+                    savedMsg.textContent = 'Marks saved for ' + sName + '.';
+                } else {
+                    // UPDATE
+                    students[editIndex] = { name: sName, m1, m2, m3, m4, m5, total, percentage };
+                    savedMsg.textContent = 'Marks updated for ' + sName + '.';
+                }
+
+                saveStudents(students);
+                renderTables();
+                clearForm();
+            });
+
+            // initial render
+            renderTables();
+        });
+    </script>
+</body>
+</html>

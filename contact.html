@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | The Study Lens</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body>
+    <!-- Top hero with image -->
+    <header class="contact-hero">
+        <!-- change src to your contact top image -->
+        <img src="hometop.jpg" alt="Contact Banner" class="contact-hero-img">
+        <div class="contact-hero-overlay">
+            <h1>Contact Us</h1>
+            <p>Get in touch about The Study Lens – Student Performance Analytics System</p>
+        </div>
+    </header>
+
+    <main class="contact-wrapper">
+        <section class="contact-card">
+            <div class="contact-left">
+                <h2>Send a Message</h2>
+                <p>Have a question about features, marks reports, or student analytics? Fill out the form and the team will respond soon.</p>
+
+                <form class="contact-form">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your name" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+
+                    <label for="role">I am a</label>
+                    <select id="role">
+                        <option>Student</option>
+                        <option>Teacher</option>
+                        <option>Parent</option>
+                        <option>Administrator</option>
+                    </select>
+
+                    <label for="message">Message</label>
+                    <textarea id="message" rows="4" placeholder="Type your message here" required></textarea>
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
+            <div class="contact-right">
+                <h2>Contact Details</h2>
+                <p><strong>System Name:</strong> The Study Lens – Student Performance Analytics</p>
+                <p><strong>Email:</strong> support@studylens.edu</p>
+                <p><strong>Phone:</strong> +91-90000-00000</p>
+                <p><strong>Location:</strong> Tadepalle, Andhra Pradesh, India</p>
+
+                <h3>Support Hours</h3>
+                <p>Monday – Friday: 9:00 AM – 6:00 PM</p>
+                <p>For urgent issues related to marks entry or analytics reports, please mention your class and student ID in the message.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Simple fake submit just to avoid page reload
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('.contact-form');
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                alert('Your message has been recorded (demo).');
+                form.reset();
+            });
+        });
+    </script>
+</body>
+</html>

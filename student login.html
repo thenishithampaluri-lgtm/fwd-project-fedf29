@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student LogIn</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Full-screen header with background + nav + login card -->
+    <section class="header">
+        <!-- NAVBAR -->
+        <nav>
+            <a href="Main.html">The Study Lens</a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="login.html">HOME</a></li>
+                    <li><a href="home.html">LOGIN</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- LOGIN CARD -->
+        <div class="wrapper">
+            <form id="studentLoginForm">
+                <h1>Student Login</h1>
+
+                <div class="input-box">
+                    <input type="text" id="studentUsername" placeholder="Username" required>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="studentPassword" placeholder="Password" required>
+                </div>
+
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#">Forgot password</a>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+
+                <div class="register-link">
+                    <p>Don't have an Account? <a href="#">Register</a></p>
+                </div>
+
+                <p id="studentError" class="error-text"></p>
+
+  
+                
+            </form>
+        </div>
+    </section>
+
+    <!-- JS for student login -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('studentLoginForm');
+            const errorText = document.getElementById('studentError');
+
+            if (!form) return;
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const username = document.getElementById('studentUsername').value.trim();
+                const password = document.getElementById('studentPassword').value.trim();
+
+                const validUser = 'Shiva';
+                const validPass = '1977';
+
+                if (username === validUser && password === validPass) {
+                    errorText.textContent = '';
+
+                    // store name for welcome message on student home
+                    localStorage.setItem('loggedInUser', 'Shiva');
+                    localStorage.setItem('loggedInRole', 'student');
+
+                    // redirect to student home page
+                    window.location.href = 'studenthome.html';
+                } else {
+                    errorText.textContent = 'Invalid username or password.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

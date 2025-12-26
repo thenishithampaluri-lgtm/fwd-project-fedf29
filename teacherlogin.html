@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher LogIn</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles1.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Full-screen header with background + nav + login card -->
+    <section class="header">
+        <!-- NAVBAR -->
+        <nav>
+            <a href="Main.html">The Study Lens</a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="Main.html">HOME</a></li>
+                    <li><a href="home.html">LOGIN</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- LOGIN CARD -->
+        <div class="wrapper">
+            <form id="teacherLoginForm">
+                <h1>Teacher Login</h1>
+
+                <div class="input-box">
+                    <input type="text" id="teacherUsername" placeholder="Username" required>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="teacherPassword" placeholder="Password" required>
+                </div>
+
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#">Forgot password</a>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+
+                <div class="register-link">
+                    <p>Don't have an Account? <a href="#">Register</a></p>
+                </div>
+
+                <p id="teacherError" class="error-text"></p>
+
+            </form>
+        </div>
+    </section>
+
+    <!-- JS for teacher login -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('teacherLoginForm');
+            const errorText = document.getElementById('teacherError');
+
+            if (!form) return;
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const username = document.getElementById('teacherUsername').value.trim();
+                const password = document.getElementById('teacherPassword').value.trim();
+
+                const validUser = 'raju';
+                const validPass = '1982';
+
+                if (username === validUser && password === validPass) {
+                    errorText.textContent = '';
+
+                    // store name for welcome message on teacher home
+                    localStorage.setItem('loggedInUser', 'raju');
+                    localStorage.setItem('loggedInRole', 'teacher');
+
+                    // redirect to teacher home page
+                    window.location.href = 'teacherhome.html';
+                } else {
+                    errorText.textContent = 'Invalid username or password.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
